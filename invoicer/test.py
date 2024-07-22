@@ -1,0 +1,50 @@
+from playwright.sync_api import Playwright, sync_playwright, expect
+
+
+def run(playwright: Playwright) -> None:
+    browser = playwright.chromium.launch(headless=False)
+    context = browser.new_context()
+    page.get_by_placeholder("Email").click()
+    page.get_by_placeholder("Email").fill("wellington.gardener@gmail.com")
+    page.get_by_placeholder("Password").click()
+    page.get_by_placeholder("Password").fill("wellington.gardener@gmail.com")
+    page.get_by_role("button", name="Sign In").click()
+    page.get_by_placeholder("Password").click()
+    page.get_by_placeholder("Email").click(modifiers=["ControlOrMeta"])
+    page.get_by_placeholder("Email").press("ControlOrMeta+a")
+    page.get_by_placeholder("Email").fill("wellington.gardener@gmail.com")
+    page.get_by_placeholder("Password").click()
+    page.get_by_placeholder("Password").fill("FRaiA6VY78M:D>q")
+    page.get_by_role("button", name="Sign In").click()
+    page.goto("https://app.afirmo.com/dashboard")
+    page.get_by_role("button", name="Later").click()
+    page.get_by_role("button", name="Create Invoice").click()
+    page.get_by_placeholder("Search contacts").click()
+    page.get_by_placeholder("Search contacts").press("CapsLock")
+    page.get_by_placeholder("Search contacts").fill("A")
+    page.get_by_placeholder("Search contacts").press("CapsLock")
+    page.get_by_placeholder("Search contacts").fill("Alice")
+    page.get_by_role("button", name="Alice Hsu").click()
+    page.get_by_placeholder("Select product").click()
+    page.get_by_role("button", name="Gardening- hourly").click()
+    page.locator("input[name=\"items\\[0\\]\\.qty\"]").click()
+    page.locator("input[name=\"items\\[0\\]\\.qty\"]").fill("4")
+    page.get_by_role("button", name="new row").click()
+    page.get_by_placeholder("Select product").click()
+    page.get_by_role("button", name="Green waste removal").click()
+    page.locator("input[name=\"inotes\\[0\\]\\.text\"]").click()
+    page.locator("input[name=\"inotes\\[0\\]\\.text\"]").fill("")
+    page.locator("input[name=\"inotes\\[0\\]\\.text\"]").press("CapsLock")
+    page.locator("input[name=\"inotes\\[0\\]\\.text\"]").fill("N")
+    page.locator("input[name=\"inotes\\[0\\]\\.text\"]").press("CapsLock")
+    page.locator("input[name=\"inotes\\[0\\]\\.text\"]").fill("Note: Yes")
+    page.get_by_role("button", name="new Notes").click()
+    page.get_by_role("button", name="Save").click()
+
+    # ---------------------
+    context.close()
+    browser.close()
+
+
+with sync_playwright() as playwright:
+    run(playwright)
