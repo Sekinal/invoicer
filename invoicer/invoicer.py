@@ -123,12 +123,14 @@ def main():
     df = read_data(data_file_path)
     print(df)
     failed_owners = []
-    with sync_playwright() as p:
-        browser, page = initialize_invoicer(email, password, p)
 
-        console.print("Creating invoices...", style="blue")
-        with Progress() as progress:
-            task = progress.add_task("[red]Creating invoices...", total=len(df))
+    with Progress() as progress:
+        task = progress.add_task("[red]Creating invoices...", total=len(df))
+        
+        with sync_playwright() as p:
+            browser = None
+            page = None
+            
             for _, row in df.iterrows():
                 owner_name = row['Owner Name']
                 invoiceable_hrs = row['Invoiceable Hours']
@@ -137,15 +139,26 @@ def main():
                 invoice_note = row['Invoice note']
 
                 try:
+                    if browser is None or page is None:
+                        browser, page = initialize_invoicer(email, password, p)
+                    
                     create_invoice(owner_name, invoiceable_hrs, hourly_rate, green_waste_no, invoice_note, page)
                 except Exception as e:
-                    failed_owners.append(owner_name)
                     logger.error(f"Error creating invoice for {owner_name}: {e}")
                     console.print(f"Error creating invoice for {owner_name}", style="red")
+                    failed_owners.append(owner_name)
+                    
+                    # Close the current browser session and set to None to reinitialize on next iteration
+                    if browser:
+                        browser.close()
+                    browser = None
+                    page = None
 
                 progress.update(task, advance=1)
 
-        browser.close()
+            # Close the browser if it's still open
+            if browser:
+                browser.close()
 
         if failed_owners:
             console.print("Failed to create invoices for:", style="red")
