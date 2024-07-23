@@ -1,11 +1,15 @@
+altgraph==0.17.4
 greenlet==3.0.3
 markdown-it-py==3.0.0
 mdurl==0.1.2
 numpy==2.0.0
+packaging==24.1
 pandas==2.2.2
 playwright==1.45.0
 pyee==11.1.0
 Pygments==2.18.0
+pyinstaller==6.9.0
+pyinstaller-hooks-contrib==2024.7
 python-dateutil==2.9.0.post0
 pytz==2024.1
 rich==13.7.1

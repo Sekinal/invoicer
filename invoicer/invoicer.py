@@ -44,7 +44,7 @@ def read_data(file_path):
         df = pd.read_csv(file_path)
         
         # Specify the columns to extract
-        columns_to_extract = ['Owner Name', 'Invoiceable Hours', 'Green Waste Number', 'Invoice note']
+        columns_to_extract = ['Owner Name', 'Invoiceable Hours', 'Invoice Rate', 'Green Waste Number', 'Invoice note']
         
         # Check if all columns exist in the DataFrame
         for column in columns_to_extract:
@@ -86,7 +86,7 @@ def initialize_invoicer(email, password, p):
         logger.error(f"Error initializing invoicer: {e}")
         raise
 
-def create_invoice(owner_name, invoiceable_hrs, green_waste_no, invoice_note, page):
+def create_invoice(owner_name, invoiceable_hrs, hourly_rate, green_waste_no, invoice_note, page):
     page.goto("https://app.afirmo.com/sales/invoices/add")
     page.wait_for_timeout(1000)
     page.get_by_placeholder("Search contacts").fill(owner_name)
@@ -95,6 +95,8 @@ def create_invoice(owner_name, invoiceable_hrs, green_waste_no, invoice_note, pa
     page.get_by_role("button", name="Gardening- hourly").click()
     page.locator("#items\[0\]\.qty").fill('')
     page.locator("#items\[0\]\.qty").fill(str(invoiceable_hrs))
+    page.locator("#items\[0\]\.unitAmount").fill('')
+    page.locator("#items\[0\]\.unitAmount").fill(str(hourly_rate))   
     
     if green_waste_no is not None and green_waste_no != '' and green_waste_no != 0:
         page.get_by_role("button", name="new row").click()
@@ -130,11 +132,12 @@ def main():
             for _, row in df.iterrows():
                 owner_name = row['Owner Name']
                 invoiceable_hrs = row['Invoiceable Hours']
+                hourly_rate = row['Invoice Rate']
                 green_waste_no = row['Green Waste Number']
                 invoice_note = row['Invoice note']
 
                 try:
-                    create_invoice(owner_name, invoiceable_hrs, green_waste_no, invoice_note, page)
+                    create_invoice(owner_name, invoiceable_hrs, hourly_rate, green_waste_no, invoice_note, page)
                 except Exception as e:
                     failed_owners.append(owner_name)
                     logger.error(f"Error creating invoice for {owner_name}: {e}")
