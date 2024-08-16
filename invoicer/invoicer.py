@@ -115,6 +115,7 @@ def create_invoice(owner_name, invoiceable_hrs, hourly_rate, green_waste_no, inv
     page.goto("https://app.afirmo.com/sales/invoices/add")
     page.wait_for_timeout(1000)
     page.get_by_placeholder("Search contacts").fill(owner_name)
+    page.wait_for_timeout(1000)
     page.get_by_role("button", name=owner_name).click()
     
     date_obj = datetime.strptime(page.locator("#date").input_value(), '%d/%m/%Y')
